@@ -117,6 +117,7 @@
 
         li{
             list-style: none;
+            position: relative;
             a{
                 text-decoration: none;
                 font-size: 14px;
@@ -129,9 +130,38 @@
                 display: block;
             }
         }
+        li:hover .header_menu_dropdown{
+            opacity:1;
+            visibility: visible;
+        }
 
         .active a {
             color: map.get($theme-colors, "success");
+        }
+        
+        .header_menu_dropdown{
+            background-color: map.get($theme-colors, "dark");
+            display: block;
+            position: absolute;
+            width: 180px;
+            z-index: 9;
+            padding: 5px 0;
+            transition: all, 0.3;
+            opacity: 0;
+            visibility: hidden;
+
+            li{ 
+                a{
+                    text-transform: capitalize;
+                    color: white;
+                    font-weight: 400;
+                    padding: 5px 15px;
+                }
+            }
+
+            :hover{
+                color: map.get($theme-colors, "maumain");
+            }
         }
     }
 }
