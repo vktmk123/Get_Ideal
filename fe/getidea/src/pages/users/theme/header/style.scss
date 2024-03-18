@@ -34,8 +34,34 @@
 }
 
 .header_top_left{
-    align-items: center;
-    padding: 10px 0 5px;
-    font-size:xx-large;
-    color: map.get($theme-colors, "normal-text");
+    ul{
+        padding: 10px 0 13px;
+        display: flex;
+        align-items: center;
+        list-style: none;
+        column-gap: 20px;
+
+        li{
+            font-size: 14px;
+            color: map.get($theme-colors, "normal-text");
+            display: flex;
+            align-items: center;
+            column-gap: 2px;
+        }
+
+        li:first-child{
+            position: relative;
+
+            &::after{
+                position: absolute;
+                right: -10px;
+                top: 1px;
+                height: 20px;
+                width: 1px;
+                background:  black;
+                opacity: 0.1;
+                content: "";
+            }
+        }
+    }
 }

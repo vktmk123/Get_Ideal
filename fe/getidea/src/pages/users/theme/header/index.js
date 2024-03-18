@@ -1,7 +1,8 @@
 import { memo } from 'react';
-import { AiOutlineAlipayCircle, AiOutlineFacebook, AiOutlineGlobal, AiOutlineInstagram, AiOutlineLinkedin, AiOutlineUser } from 'react-icons/ai';
+import {AiOutlineFacebook, AiOutlineGlobal, AiOutlineInstagram, AiOutlineLinkedin, AiOutlineMail, AiOutlineUser } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import './style.scss';
+import { formatter } from 'utils/formater';
 
 const Header = () => {
     return (
@@ -9,9 +10,14 @@ const Header = () => {
             <div className="container">
                 <div className='row'>
                     <div className='col-6 header_top_left'>
-                        <Link to={""}> 
-                            <AiOutlineAlipayCircle/>
-                        </Link></div>
+                        <ul>
+                            <li>
+                                <AiOutlineMail/>
+                                thanh@gmail.com
+                                </li>
+                            <li>Hello i love you {formatter(3000)}</li>
+                        </ul>
+                    </div>
                     <div className='col-6 header_top_right'>
                         <ul>
                             <li>
