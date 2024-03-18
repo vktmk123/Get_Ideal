@@ -1,0 +1,12 @@
+npm init    
+npm install --save-dev nodemon
+
+npm install mongodb --save
+mongodb+srv://thanhmk123:Vthanhmk123@cluster0.stnytvr.mongodb.net/Get_Articel?retryWrites=true&w=majority&appName=Cluster0
+
+npm install express --save
+
+
+-------------------
+user thanhmk123
+password Vthanhmk123
