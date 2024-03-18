@@ -106,10 +106,21 @@ const Header = () => {
                     <div className='col-xl-6'> 
                         <nav className='header_menu'>
                             <ul>
-                                {
-                                menus?.map((menu, menuKey) => (
+                                {menus?.map((menu, menuKey) => (
                                     <li key={menuKey} className={menuKey === 0 ? 'active' : ""}>
                                         <Link to={menu?.path}>{menu?.name}</Link>
+                                        {menu.child && (
+                                                <ul className='header_menu_dropdown'>
+                                                    {menu.child.map((chiledItem, chiledKey)=>(
+                                                        <li key={`${menuKey} - ${chiledKey}`}>
+                                                        <Link to={chiledItem.path}>{chiledItem.name}</Link>
+                                                        </li>
+                                                        ))
+                                                    }
+                                                    
+                                                </ul>
+                                            )
+                                        }
                                     </li>
                                 ))} 
                             </ul>

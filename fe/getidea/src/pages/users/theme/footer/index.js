@@ -1,11 +1,10 @@
 import {memo} from 'react';
+import './style.scss';
 
 const Footer = () => {
-    return (
-    <>
-        <h1>Footer</h1>
-    </> 
-    );
+    return <Footer>
+        
+    </Footer>;
 };
 
 export default memo(Footer);
