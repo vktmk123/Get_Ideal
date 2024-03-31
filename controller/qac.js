@@ -367,6 +367,8 @@ exports.mostViewIdeas = async (req, res) => {
         }
         catch (e) {
             console.log(e);
+            let distance5_ideas = [];
+            let mostViewedIdeas = [];
             res.render('qac/mostViewedIdeas', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
         }
     }
@@ -752,6 +754,8 @@ exports.viewLastestIdeas = async (req, res) => {
         }
         catch (e) {
             console.log(e);
+            let distance5_ideas = [];
+            let lastestIdeas = [];
             res.render('qac/viewLastestIdeas', { distance5_ideas: distance5_ideas, lastestIdeas: lastestIdeas, loginName: req.session.email });
         }
     }

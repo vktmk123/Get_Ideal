@@ -474,7 +474,7 @@ exports.downloadCSV = async (req, res) => {
 exports.numberOfIdeasByYear = async (req, res) => {
     let yearStart = 2020;
     let yearEnd = 2025;
-    if (req.body == {}) {
+    if (req.body == {}) {   
         //console.log(req.body)
         yearStart = parseInt(req.body.from);
         yearEnd = parseInt(req.body.to);
@@ -513,7 +513,7 @@ exports.numberOfIdeasByYear = async (req, res) => {
 }
 
 exports.numberOfIdeasByYear2 = async (req, res) => {
-    let year = 2022;
+    let year = 2024;
     console.log(req.body.year);
     if (req.body.year != undefined) {
         year = parseInt(req.body.year);

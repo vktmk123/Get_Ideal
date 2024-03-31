@@ -139,16 +139,17 @@ exports.deleteQAmanager = async (req, res) => {
     let aQAmanager = await QAmanager.findById(id);
     let email = aQAmanager.email;
     console.log(email);
-    Account.deleteOne({ 'email': email }, (err) => {
-        if (err)
-            throw err;
-        else
-            console.log('Account is deleted');
-    })
-    await QAmanager.findByIdAndRemove(id).then(data = {});
+    try {
+        await Account.deleteOne({ 'email': email });
+        console.log('Account is deleted');
+    } catch (err) {
+        console.error(err);
+    }
+    await QAmanager.findByIdAndDelete(id).then(data = {});
 
     res.redirect('/admin/viewQualityAssuranceManager');
 }
+
 exports.searchQAmanager = async (req, res) => {
     const searchText = req.body.keyword;
     //console.log(req.body.keyword);
@@ -241,20 +242,23 @@ exports.doEditQAcoordinator = async (req, res) => {
         res.redirect('/admin/viewQualityAssuranceCoordinator');
     }
 }
+
 exports.deleteQAcoordinator = async (req, res) => {
     let id = req.query.id;
     let aQAcoordinator = await QAcoordinator.findById(id);
     let email = aQAcoordinator.email;
-    Account.deleteOne({ 'email': email }, (err) => {
-        if (err)
-            throw err;
-        else
-            console.log('Account is deleted');
-    })
-    await QAcoordinator.findByIdAndRemove(id).then(data = {});
+    try {
+        await Account.deleteOne({ 'email': email });
+        console.log('Account is deleted');
+    } catch (err) {
+        console.error(err);
+    }
+    await QAcoordinator.findByIdAndDelete(id).then(data = {});
 
     res.redirect('/admin/viewQualityAssuranceCoordinator');
 }
+
+
 exports.searchQAcoordinator = async (req, res) => {
     const searchText = req.body.keyword;
     //console.log(req.body.keyword);
@@ -354,17 +358,19 @@ exports.deleteStudent = async (req, res) => {
     let aStudent = await Student.findById(id);
     let email = aStudent.email;
     console.log(email);
-    Account.deleteOne({ 'email': email }, (err) => {
-        if (err)
-            throw err;
-        else
-            console.log('Account is deleted');
-    })
+    try {
+        await Account.deleteOne({ 'email': email });
+        console.log('Account is deleted');
+    } catch (err) {
+        console.error(err);
+    }
     await idea.deleteMany({'author': aStudent.id});
     await Comments.deleteMany({'author': aStudent.id});
-    await Student.findByIdAndRemove(id).then(data = {});
+    await Student.findByIdAndDelete(id);
     res.redirect('/admin/viewStudent');
 }
+
+
 exports.searchStudent = async (req, res) => {
     const searchText = req.body.keyword;
     console.log(req.body);

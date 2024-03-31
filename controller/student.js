@@ -329,9 +329,11 @@ exports.viewEventDetail = async (req, res) => {
             })
         } else {
             res.render('student/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, sortBy: sortBy, noPage: noPage, page: page, loginName: req.session.email });
-        }
-    } catch (e) {
+        } 
+    } 
+    catch (e) {
         console.log(e);
+        let compare = false; 
         res.render('student/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, loginName: req.session.email });
     }
 }
@@ -598,6 +600,7 @@ exports.viewLastestIdeas = async (req, res) => {
         }
         catch (e) {
             console.log(e);
+            let lastestIdeas = [];
             res.render('student/viewLastestIdeas', { lastestIdeas: lastestIdeas, loginName: req.session.email });
         }
     }
@@ -1088,6 +1091,7 @@ exports.viewMostViewedIdeas = async (req, res) => {
         }
         catch (e) {
             console.log(e);
+            let mostViewedIdeas = [];
             res.render('student/viewMostViewedIdeas', { mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
         }
     }
