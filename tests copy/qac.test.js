@@ -1,7 +1,7 @@
 const qacController = require('../controller/qac');
 const idea = require('../models/ideas');
 const comment = require('../models/comments');
-const staff = require('../models/staff');
+const student = require('../models/student');
 const fs = require("fs");
 
 jest.useFakeTimers();
@@ -50,7 +50,7 @@ describe('Test QAC controller', () => {
         ideaId: 1,
       })
 
-      jest.spyOn(staff, 'findOne').mockResolvedValueOnce({
+      jest.spyOn(student, 'findOne').mockResolvedValueOnce({
         author: 1
       })
 

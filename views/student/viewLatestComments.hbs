@@ -47,24 +47,25 @@
 {{> head}}
 
 <body class="sb-nav-fixed">
-    {{> qacHeader}}
+    {{> studentHeader}}
     <div class="row">
         <div class="col" style="margin: 5% 30%;">
-            {{#ifEquals distance5_ideas.length 0}}
-            {{else}}
+            <h1 class="display-1 font-weight-bold" style="text-align:center">Latest Comments</h1>
             <div class="dropdown">
-                <button onclick="myFunction()" class="dropbtn">Latest by ↓</button>
+                <button onclick="myFunction()" class="dropbtn">Lastest by ↓</button>
                 <div id="myDropdown" class="dropdown-content">
-                    <form action="/qac/viewLastestIdeas" method="POST">
-                        {{#each distance5_ideas}}
-                        <input type="submit" name="last" value="{{this}}">
+                    <form action="/student/viewLatestComments" method="POST">
+                        <input type="submit" name="last" value="5">
                         <br>
-                        {{/each}}
+                        <input type="submit" name="last" value="10">
+                        <br>
+                        <input type="submit" name="last" value="15">
+                        <br>
+                        <input type="submit" name="last" value="20">
                     </form>
                 </div>
             </div>
-            {{/ifEquals}}
-            {{#each lastestIdeas}}
+            {{#each lastComments_detail}}
             <div class="container py-5" style="margin-bottom: 3% ; background-color: rgba(225, 230, 238, 0.481);">
                 <div class="row">
                     <div class="col">
@@ -105,9 +106,10 @@
                                     <i>{{n_dislikes}}</i>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div style="font-weight: 900px; font-size: 1.2rem; margin-top: 3px; border: none;">
-                                    {{comment}} Comments
+                            <div class="col-sm-1">
+                                <div class="btn " type="submit" style="font-size: 15px; border: none;" /disabled>
+                                    <i class="fa fa-comment" style=" color: #6a6e72;"></i>
+                                    <i>{{comment_len}}</i>
                                 </div>
                             </div>
                         </div>
@@ -115,15 +117,16 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <div style="width: 700px">
+                        <div class="well" style="width: 700px">
                             {{#ifEquals idea.comments.length 0}}
                             {{else}}
-                            <button class="see-less" style=" font-size: 1.2rem; border: none; color: #3e5745; ">See
+                            <button class="see-less"
+                                style=" font-size: 1.2rem; border: none; color:#3e5745; background: #e2e3e4;border-radius: 5px;">See
                                 Less...</button>
-                            <button class="see-more" style=" font-size: 1.2rem; border: none; color:#3e5745; ">Read more
-                                comments...</button>
+                            <button class="see-more"
+                                style="font-size: 1.2rem; border: none; color:#3e5745; background: #e2e3e4;border-radius: 5px; ">Read
+                                more comments...</button>
                             {{/ifEquals}}
-                            {{#each idea.comments}}
                             <div class="user-comment-box commented-section py-2" style="display:none;">
                                 <div class="second py-2 px-2" style="margin-left: 15px;">
                                     <ul class="media-list">
@@ -133,21 +136,20 @@
                                                 <img class="rounded-circle" src="/images/user.png" width="40px"
                                                     height="40px" />
                                                 {{else}}
-                                                <img class="rounded-circle" src="/uploads/student/{{this.author.img}}"
+                                                <img class="rounded-circle" src="/uploads/student/{{author.img}}"
                                                     width="40px" height="40px">
                                                 {{/if}}
                                             </div>
                                             <div class="media-body">
                                                 <h3>
                                                     {{#if this.annonymously}}
-                                                    Annonymously
                                                     {{else}}
-                                                    {{this.author.name}}
+                                                    {{author.name}}
                                                     {{/if}}
                                                 </h3>
                                                 <div class="well well-lg" style="width: 600px; padding: 10px;">
                                                     <p style="font-size: medium; margin:0; text-align: justify;">
-                                                        {{this.comment}}
+                                                        {{comment_content}}
                                                     </p>
                                                 </div>
                                                 <div class="pull-right" style="margin-top: -3%;">
@@ -183,7 +185,6 @@
                                     </ul>
                                 </div>
                             </div>
-                            {{/each}}
                         </div>
                     </div>
                 </div>
@@ -191,48 +192,48 @@
             {{/each}}
         </div>
     </div>
-</body>
-<script>
-    /* When the user clicks on the button, 
-    toggle between hiding and showing the dropdown content */
-    function myFunction() {
-        document.getElementById("myDropdown").classList.toggle("show");
-    }
+    <script>
+        /* When the user clicks on the button, 
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
 
-    // Close the dropdown if the user clicks outside of it
-    window.onclick = function (event) {
-        if (!event.target.matches('.dropbtn')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            var i;
-            for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
                 }
             }
         }
-    }
-</script>
-<script>
-    $(function () {
-        $(".see-less").hide();
-        $(".see-more").click(function (e) { // click event for load more
-            e.preventDefault();
-            $(this).siblings(".user-comment-box:hidden").slice(-4).show(); // select next 5 hidden divs and show them
-            if ($(this).siblings(".user-comment-box:hidden").length == 0) {
+    </script>
+    <script>
+        $(function () {
+            $(".see-less").hide();
+            $(".see-more").click(function (e) { // click event for load more
+                e.preventDefault();
+                $(this).siblings(".user-comment-box:hidden").slice(-4).show(); // select next 5 hidden divs and show them
+                if ($(this).siblings(".user-comment-box:hidden").length == 0) {
+                    $(this).hide();
+                }
+                if ($(this).siblings(".user-comment-box").length != 0) {
+                    $(this).siblings(".see-less").show();
+                }
+            });
+            $(".see-less").click(function (e) { // click event for load more
+                e.preventDefault();
                 $(this).hide();
-            }
-            if ($(this).siblings(".user-comment-box").length != 0) {
-                $(this).siblings(".see-less").show();
-            }
+                $(this).siblings(".user-comment-box").hide();
+                $(this).siblings(".see-more").show();
+            });
         });
-        $(".see-less").click(function (e) { // click event for load more
-            e.preventDefault();
-            $(this).hide();
-            $(this).siblings(".user-comment-box").hide();
-            $(this).siblings(".see-more").show();
-        });
-    });
-</script>
+    </script>
+</body>
 
 </html>

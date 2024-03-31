@@ -7,9 +7,9 @@ const likes = new mongoose.Schema({
         require : true
     }, 
 
-    staffID:[{
+    studentID:[{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'staff',
+        ref: 'student',
         require : true
     }]
 });

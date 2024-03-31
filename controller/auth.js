@@ -23,7 +23,7 @@ exports.handleLogin = async (req, res) => {
                     req.session.email = username;
                     req.session.admin = true;
                     res.redirect('/admin');
-                }else if(user.role == 'Staff'){
+                }else if(user.role == 'Student'){
                     req.session.user = user;
                     req.session.email = username;
                     req.session.staff = true;

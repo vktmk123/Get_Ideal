@@ -65,10 +65,10 @@ router.post('/admin/doEditQualityAssuranceCoordinator', isAdmin, uploadQAcoordin
 router.get('/admin/deleteQualityAssuranceCoordinator', isAdmin, adminController.deleteQAcoordinator);
 router.post('/admin/searchQualityAssuranceCoordinator', isAdmin, adminController.searchQAcoordinator);
 
-//Staff
-const storageStaff = multer.diskStorage({
+//Student
+const storageStudent = multer.diskStorage({
     destination:function(req, file, callback){
-        callback(null, 'public/uploads/staff');
+        callback(null, 'public/uploads/student');
     },
     //add back the extension
     filename:function(req, file, callback){
@@ -76,27 +76,27 @@ const storageStaff = multer.diskStorage({
     },
 });
 
-const uploadStaff = multer({
-    storage:storageStaff,
+const uploadStudent = multer({
+    storage:storageStudent,
     limits:{
         fieldSize:1024*1024*3
     },
 });
-router.get('/admin/viewStaff', isAdmin, adminController.viewStaff);
-router.get('/admin/addStaff', isAdmin, adminController.addStaff);
-router.post('/admin/doAddStaff', isAdmin, uploadStaff.single('picture'), adminController.doAddStaff);
-router.get('/admin/editStaff', isAdmin, adminController.editStaff);
-router.post('/admin/doEditStaff', isAdmin, uploadStaff.single('picture'), adminController.doEditStaff);
-router.get('/admin/deleteStaff', isAdmin, adminController.deleteStaff);
-router.post('/admin/searchStaff', isAdmin, adminController.searchStaff);
+router.get('/admin/viewStudent', isAdmin, adminController.viewStudent);
+router.get('/admin/addStudent', isAdmin, adminController.addStudent);
+router.post('/admin/doAddStudent', isAdmin, uploadStudent.single('picture'), adminController.doAddStudent);
+router.get('/admin/editStudent', isAdmin, adminController.editStudent);
+router.post('/admin/doEditStudent', isAdmin, uploadStudent.single('picture'), adminController.doEditStudent);
+router.get('/admin/deleteStudent', isAdmin, adminController.deleteStudent);
+router.post('/admin/searchStudent', isAdmin, adminController.searchStudent);
 
-router.get('/admin/viewCategory', isAdmin, adminController.viewCategory);
-router.post('/admin/searchCategory', isAdmin, adminController.searchCategory);
-router.get('/admin/category/edit', isAdmin, adminController.editDate);
-router.post('/admin/doEditCategory', isAdmin, adminController.doEditDate);
+router.get('/admin/viewEvent', isAdmin, adminController.viewEvent);
+router.post('/admin/searchEvent', isAdmin, adminController.searchEvent);
+router.get('/admin/event/edit', isAdmin, adminController.editDate);
+router.post('/admin/doEditEvent', isAdmin, adminController.doEditDate);
 
 
 router.get('/admin/viewSubmittedIdeas', isAdmin, adminController.viewSubmittedIdeas);
-router.get('/admin/viewCategoryDetail', isAdmin, adminController.viewCategoryDetail);
-router.post('/admin/viewCategoryDetail', isAdmin, adminController.viewCategoryDetail);
+router.get('/admin/viewEventDetail', isAdmin, adminController.viewEventDetail);
+router.post('/admin/viewEventDetail', isAdmin, adminController.viewEventDetail);
 module.exports = router;

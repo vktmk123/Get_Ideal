@@ -1,9 +1,9 @@
 const mongoose = require('../db/db');
 
 const ideas = new mongoose.Schema({
-    categoryID: {
+    eventID: {
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'category',
+        ref: 'event',
         require : true
     }, 
     name: { 
@@ -16,7 +16,7 @@ const ideas = new mongoose.Schema({
     },
     author:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Staff',
+        ref: 'Student',
         require : true
     },
     time:{

@@ -1,6 +1,6 @@
 const idea = require('../models/ideas');
 const comment = require('../models/comments');
-const staff = require('../models/staff');
+const student = require('../models/student');
 const fs = require("fs");
 const Account = require('../models/user');
 const bcrypt = require('bcryptjs');
@@ -147,7 +147,7 @@ exports.viewLastestComment = async (req, res) => {
             }
             for (let comment of last_comments) {
                 let objIdea = await idea.findOne({ _id: comment.ideaID });
-                let objAuthor = await staff.findOne({ _id: comment.author });
+                let objAuthor = await student.findOne({ _id: comment.author });
                 if (objIdea === null || objAuthor === null) {
                     if (objIdea === null)
                         console.log('Idea lost: ', comment.ideaID);
@@ -239,7 +239,7 @@ exports.filterLastestComment = async (req, res) => {
             }
             for (let comment of last_comments) {
                 let objIdea = await idea.findOne({ _id: comment.ideaID });
-                let objAuthor = await staff.findOne({ _id: comment.author });
+                let objAuthor = await student.findOne({ _id: comment.author });
                 if (objIdea === null || objAuthor === null) {
                     console.log(comment.ideaID);
                     continue;
@@ -354,7 +354,7 @@ exports.mostViewIdeas = async (req, res) => {
                         linkValue: i.url.slice(7),
                         name: i.name,
                         comment: i.comments.length,
-                        idCategory: i.categoryID,
+                        idEvent: i.eventID,
                         n_likes: i.like,
                         n_dislikes: i.dislike,
                         time: i.time.toString().slice(0, -25)
@@ -455,7 +455,7 @@ exports.filterMostViewIdeas = async function (req, res) {
                         linkValue: i.url.slice(7),
                         name: i.name,
                         comment: i.comments.length,
-                        idCategory: i.categoryID,
+                        idEvent: i.eventID,
                         n_likes: i.like,
                         n_dislikes: i.dislike,
                         time: i.time.toString().slice(0, -25)
@@ -556,7 +556,7 @@ exports.viewMostComments = async (req, res) => {
                         linkValue: i.url.slice(7),
                         name: i.name,
                         comment: i.comments.length,
-                        idCategory: i.categoryID,
+                        idEvent: i.eventID,
                         n_likes: i.like,
                         n_dislikes: i.dislike,
                         time: i.time.toString().slice(0, -25),
@@ -658,7 +658,7 @@ exports.filterMostComments = async function (req, res) {
                         linkValue: i.url.slice(7),
                         name: i.name,
                         comment: i.comments.length,
-                        idCategory: i.categoryID,
+                        idEvent: i.eventID,
                         n_likes: i.like,
                         n_dislikes: i.dislike,
                         time: i.time.toString().slice(0, -25)
@@ -739,7 +739,7 @@ exports.viewLastestIdeas = async (req, res) => {
                         linkValue: i.url.slice(7),
                         name: i.name,
                         comment: i.comments.length,
-                        idCategory: i.categoryID,
+                        idEvent: i.eventID,
                         n_likes: i.like,
                         n_dislikes: i.dislike,
                         time: i.time.toString().slice(0, -25)
@@ -826,7 +826,7 @@ exports.filterLastestIdeas = async (req, res) => {
                         linkValue: i.url.slice(7),
                         name: i.name,
                         comment: i.comments.length,
-                        idCategory: i.categoryID,
+                        idEvent: i.eventID,
                         n_likes: i.like,
                         n_dislikes: i.dislike,
                         time: i.time.toString().slice(0, -25)

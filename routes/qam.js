@@ -7,17 +7,17 @@ const { isQAM } = require("../middleware/auth");
 
 // router.get('/qam_index', isQAM, qamController.getQAM);
 router.get('/qam_index', isQAM, qamController.getQAM);
-router.get('/qam/qamAddCategory', isQAM, qamController.getAddCategory);
-router.post('/qam/doAddCategory', isQAM, qamController.doAddCategory);
-router.get('/qam/qamViewCategory', isQAM, qamController.getViewCategory);
-router.get('/qam/qamViewCategoryDetail', isQAM, qamController.getCategoryDetail);
-router.post('/qam/qamViewCategoryDetail', isQAM, qamController.getCategoryDetail);
-router.get('/qam/qamDeleteCategory', isQAM, qamController.deleteCategory);
+router.get('/qam/qamAddEvent', isQAM, qamController.getAddEvent);
+router.post('/qam/doAddEvent', isQAM, qamController.doAddEvent);
+router.get('/qam/qamViewEvent', isQAM, qamController.getViewEvent);
+router.get('/qam/qamViewEventDetail', isQAM, qamController.getEventDetail);
+router.post('/qam/qamViewEventDetail', isQAM, qamController.getEventDetail);
+router.get('/qam/qamDeleteEvent', isQAM, qamController.deleteEvent);
 
 router.get('/qam/viewLastestIdeas', isQAM, qamController.viewLastestIdeas);
 router.post('/qam/viewLastestIdeas', isQAM, qamController.viewLastestIdeas);
-router.get('/qam/qamEditCategory', isQAM, qamController.editCategory);
-router.post('/qam/doEditCategory', isQAM, qamController.updateCategory);
+router.get('/qam/qamEditEvent', isQAM, qamController.editEvent);
+router.post('/qam/doEditEvent', isQAM, qamController.updateEvent);
 router.get('/qam/viewMostViewed', isQAM, qamController.getMostViewed);
 router.post('/qam/viewMostViewed', isQAM, qamController.getMostViewed);
 router.get('/qam/downloadZip', isQAM, qamController.downloadZip);
@@ -32,5 +32,5 @@ router.get('/qam/numberOfPeople', isQAM, qamController.numberOfPeople);
 router.get('/qam/changePassword', isQAM, qamController.changePassword)
 router.post('/qam/doChangePassword', isQAM, qamController.doChangePassword)
 
-router.post('/qam/qamSearchCategory', isQAM, qamController.searchCategory);
+router.post('/qam/qamSearchEvent', isQAM, qamController.searchEvent);
 module.exports = router;

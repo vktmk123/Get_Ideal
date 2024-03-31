@@ -5,8 +5,8 @@ exports.isAdmin = function(req, res, next) {
       return res.sendStatus(401);
 };
 
-exports.isStaff = function(req, res, next) {
-    if (req.session && req.session.staff)
+exports.isStudent = function(req, res, next) {
+    if (req.session && req.session.student)
       return next();
     else
       return res.sendStatus(401);

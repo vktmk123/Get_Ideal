@@ -1,8 +1,8 @@
 const Account = require('../models/user');
-const Staff = require('../models/staff');
+const Student = require('../models/student');
 const QAcoordinator = require('../models/QAcoordinator');
 const QAmanager = require('../models/QAmanager');
-const category = require('../models/category');
+const event = require('../models/event');
 const Comments = require('../models/comments');
 const idea = require('../models/ideas');
 const validation = require('./validation');
@@ -273,18 +273,18 @@ exports.searchQAcoordinator = async (req, res) => {
     res.render('admin/viewQAcoordinator', { listQAcoordinator: listQAcoordinator, loginName: req.session.email });
 }
 
-//Staff
-exports.viewStaff = async (req, res) => {
-    let listStaff = await Staff.find();
-    res.render('admin/viewStaff', { listStaff: listStaff, loginName: req.session.email })
+//Student student
+exports.viewStudent = async (req, res) => {
+    let listStudent = await Student.find();
+    res.render('admin/viewStudent', { listStudent: listStudent, loginName: req.session.email })
 }
-exports.addStaff = async (req, res) => {
-    res.render('admin/addStaff', { loginName: req.session.email });
+exports.addStudent = async (req, res) => {
+    res.render('admin/addStudent', { loginName: req.session.email });
 }
-exports.doAddStaff = async (req, res) => {
-    let newStaff;
+exports.doAddStudent = async (req, res) => {
+    let newStudent;
     if (req.file) {
-        newStaff = new Staff({
+        newStudent = new Student({
             name: req.body.name,
             email: req.body.email,
             dateOfBirth: new Date(req.body.date),
@@ -294,7 +294,7 @@ exports.doAddStaff = async (req, res) => {
         })
     }
     else {
-        newStaff = new Staff({
+        newStudent = new Student({
             name: req.body.name,
             email: req.body.email,
             dateOfBirth: new Date(req.body.date),
@@ -305,7 +305,7 @@ exports.doAddStaff = async (req, res) => {
     let newAccount = new Account({
         email: req.body.email,
         password: "12345678",
-        role: "Staff"
+        role: "Student"
     })
     try {
         await bcrypt.genSalt(10, (err, salt) => {
@@ -315,44 +315,44 @@ exports.doAddStaff = async (req, res) => {
                 newAccount = newAccount.save();
             });
         });
-        newStaff = await newStaff.save();
-        res.redirect('/admin/viewStaff');
+        newStudent = await newStudent.save();
+        res.redirect('/admin/viewStudent');
     }
     catch (error) {
         console.log(error);
-        res.redirect('/admin/viewStaff');
+        res.redirect('/admin/viewStudent');
     }
 }
-exports.editStaff = async (req, res) => {
+exports.editStudent = async (req, res) => {
     let id = req.query.id;
-    let aStaff = await Staff.findById(id);
+    let aStudent = await Student.findById(id);
 
-    res.render('admin/editStaff', { aStaff: aStaff, loginName: req.session.email });
+    res.render('admin/editStudent', { aStudent: aStudent, loginName: req.session.email });
 }
-exports.doEditStaff = async (req, res) => {
+exports.doEditStudent = async (req, res) => {
     let id = req.body.id;
-    let aStaff = await Staff.findById(id);
+    let aStudent = await Student.findById(id);
 
     try {
         if (req.file) {
-            aStaff.img = req.file.filename;
+            aStudent.img = req.file.filename;
         }
-        aStaff.name = req.body.name;
-        aStaff.dateOfBirth = new Date(req.body.date);
-        aStaff.address = req.body.address;
-        aStaff.type = req.body.department
-        aStaff = await aStaff.save();
-        res.redirect('/admin/viewStaff');
+        aStudent.name = req.body.name;
+        aStudent.dateOfBirth = new Date(req.body.date);
+        aStudent.address = req.body.address;
+        aStudent.type = req.body.department
+        aStudent = await aStudent.save();
+        res.redirect('/admin/viewStudent');
     }
     catch (error) {
         console.log(error);
-        res.redirect('/admin/viewStaff');
+        res.redirect('/admin/viewStudent');
     }
 }
-exports.deleteStaff = async (req, res) => {
+exports.deleteStudent = async (req, res) => {
     let id = req.query.id;
-    let aStaff = await Staff.findById(id);
-    let email = aStaff.email;
+    let aStudent = await Student.findById(id);
+    let email = aStudent.email;
     console.log(email);
     Account.deleteOne({ 'email': email }, (err) => {
         if (err)
@@ -360,94 +360,94 @@ exports.deleteStaff = async (req, res) => {
         else
             console.log('Account is deleted');
     })
-    await idea.deleteMany({'author': aStaff.id});
-    await Comments.deleteMany({'author': aStaff.id});
-    await Staff.findByIdAndRemove(id).then(data = {});
-    res.redirect('/admin/viewStaff');
+    await idea.deleteMany({'author': aStudent.id});
+    await Comments.deleteMany({'author': aStudent.id});
+    await Student.findByIdAndRemove(id).then(data = {});
+    res.redirect('/admin/viewStudent');
 }
-exports.searchStaff = async (req, res) => {
+exports.searchStudent = async (req, res) => {
     const searchText = req.body.keyword;
     console.log(req.body);
-    let listStaff;
+    let listStudent;
     let checkAlphaName = validation.checkAlphabet(searchText);
     let checkEmpty = validation.checkEmpty(searchText);
     const searchCondition = new RegExp(searchText, 'i');
 
     //console.log(checkEmpty);
     if (!checkEmpty) {
-        res.redirect('/admin/viewStaff');
+        res.redirect('/admin/viewStudent');
     }
     else if (checkAlphaName) {
-        listStaff = await Staff.find({ name: searchCondition });
+        listStudent = await Student.find({ name: searchCondition });
     }
-    res.render('admin/viewStaff', { listStaff: listStaff, loginName: req.session.email });
+    res.render('admin/viewStudent', { listStudent: listStudent, loginName: req.session.email });
 }
 //Edit date
-exports.viewCategory = async (req, res) => {
-    let listCategory = await category.find();
-    res.render('admin/viewCategory', { listCategory: listCategory, loginName: req.session.email })
+exports.viewEvent = async (req, res) => {
+    let listEvent = await event.find();
+    res.render('admin/viewEvent', { listEvent: listEvent, loginName: req.session.email })
 }
-exports.searchCategory = async (req, res) => {
+exports.searchEvent = async (req, res) => {
     const searchText = req.body.keyword;
-    let listCategory;
+    let listEvent;
     let checkEmpty = validation.checkEmpty(searchText);
     const searchCondition = new RegExp(searchText, 'i');
 
     if (!checkEmpty) {
-        res.redirect('/admin/viewCategory');
+        res.redirect('/admin/viewEvent');
     }
     else {
-        listCategory = await category.find({ name: searchCondition });
+        listEvent = await event.find({ name: searchCondition });
     }
-    res.render('admin/viewCategory', { listCategory: listCategory, loginName: req.session.email });
+    res.render('admin/viewEvent', { listEvent: listEvent, loginName: req.session.email });
 }
 exports.editDate = async (req, res) => {
     let id = req.query.id;
-    let aCategory = await category.findById(id);
-    res.render('admin/editDate', { aCategory: aCategory, loginName: req.session.email })
+    let aEvent = await event.findById(id);
+    res.render('admin/editDate', { aEvent: aEvent, loginName: req.session.email })
 }
 exports.doEditDate = async (req, res) => {
     console.log(req.body)
     let id = req.body.id;
 
-    let aCategory = await category.findById(id);
+    let aEvent = await event.findById(id);
     console.log(req.body.dateStart)
     console.log(req.body.dateEnd)
     let errors
     try {
         if(req.body.dateStart < req.body.dateEnd){
-            aCategory.dateStart = new Date(req.body.dateStart);
-            aCategory.dateEnd = new Date(req.body.dateEnd);
-            aCategory = await aCategory.save();
-            res.redirect('/admin/viewCategory');
+            aEvent.dateStart = new Date(req.body.dateStart);
+            aEvent.dateEnd = new Date(req.body.dateEnd);
+            aEvent = await aEvent.save();
+            res.redirect('/admin/viewEvent');
         }
         else{
             errors = 'End date must be greater than start date';
-            res.render('admin/editDate', { errors: errors, aCategory: aCategory, loginName: req.session.email })
+            res.render('admin/editDate', { errors: errors, aEvent: aEvent, loginName: req.session.email })
         }
     }
     catch (error) {
         console.log(error);
-        res.redirect('/admin/viewCategory');
+        res.redirect('/admin/viewEvent');
     }
 }
 
 //view
 
 exports.viewSubmittedIdeas = async (req, res) => {
-    let listCategory = await category.find();
-    res.render('admin/viewSubmittedIdeas', { listCategory: listCategory, loginName: req.session.email })
+    let listEvent = await event.find();
+    res.render('admin/viewSubmittedIdeas', { listEvent: listEvent, loginName: req.session.email })
 }
-exports.viewCategoryDetail = async (req, res) => {
+exports.viewEventDetail = async (req, res) => {
     let id;
     let noPage;
-    //console.log(req.body.idCategory);
+    //console.log(req.body.idEvent);
     let page = 1;
     if(req.body.noPage != undefined){
         page = req.body.noPage;
     }
     if (req.query.id === undefined) {
-        id = req.body.idCategory;
+        id = req.body.idEvent;
     } else {
         id = req.query.id;
     }
@@ -458,10 +458,10 @@ exports.viewCategoryDetail = async (req, res) => {
     // let id = req.query.id;
     let listFiles = [];
     try {
-        let listIdeas = await idea.find({ categoryID: id }).populate({path:'comments', populate : { path: 'author'}}).populate('author');
-        let aCategory = await category.findById(id);
+        let listIdeas = await idea.find({ eventID: id }).populate({path:'comments', populate : { path: 'author'}}).populate('author');
+        let aEvent = await event.findById(id);
         let tempDate = new Date();
-        let compare = tempDate > aCategory.dateEnd;
+        let compare = tempDate > aEvent.dateEnd;
         const fs = require("fs");
         var counter = 0;
         function callBack() {
@@ -544,8 +544,8 @@ exports.viewCategoryDetail = async (req, res) => {
                 listFiles = listFiles.slice(s,s+5);
                 console.log(noPage);
                 console.log(listFiles.length);
-                //res.render('admin/viewCategoryDetail', { idCategory: id, listFiles: listFiles, nameIdea: nameIdea, listComment: listComment, compare: compare, loginName: req.session.email });
-                res.render('admin/viewCategoryDetail', { idCategory: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
+                //res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, nameIdea: nameIdea, listComment: listComment, compare: compare, loginName: req.session.email });
+                res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
             };
         };
         console.log(listIdeas);
@@ -563,11 +563,11 @@ exports.viewCategoryDetail = async (req, res) => {
                 });
             })
         }else{
-            res.render('admin/viewCategoryDetail', { idCategory: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
+            res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
         }
     } catch (e) {
         // console.log(e);
-        res.render('admin/viewCategoryDetail', { idCategory: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });
+        res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });
     }
 }
 

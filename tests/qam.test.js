@@ -5,7 +5,7 @@ const comment = require('../models/comments');
 const staff = require('../models/staff');
 const Account = require('../models/user');
 const fs = require("fs");
-const Category = require('../models/category');
+const Event = require('../models/event');
 bcrypt.compare = jest.fn();
 
 jest.useFakeTimers()
@@ -65,7 +65,7 @@ describe('Test qam controller', () => {
       expect(res.redirect).toHaveBeenCalledWith("/qam_index");
     })
   })
-  describe('Test get add category', () => {
+  describe('Test get add event', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       jest.resetAllMocks();
@@ -77,13 +77,13 @@ describe('Test qam controller', () => {
         }
       };
       const res = mockResponse();
-      await qamController.getAddCategory(req, res);
+      await qamController.getAddEvent(req, res);
 
-      expect(res.render).toHaveBeenCalledWith("qam/qamAddCategory", {"loginName": "Test@gmail.com"});
+      expect(res.render).toHaveBeenCalledWith("qam/qamAddEvent", {"loginName": "Test@gmail.com"});
     })
   })
 
-  describe('Test do add category', () => {
+  describe('Test do add event', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       jest.resetAllMocks();
@@ -104,19 +104,19 @@ describe('Test qam controller', () => {
 
       jest.spyOn(fs, 'access').mockResolvedValueOnce(true)
 
-      jest.spyOn(Category, 'create').mockResolvedValueOnce({
+      jest.spyOn(Event, 'create').mockResolvedValueOnce({
         name: 'Test',
         description: 'Test',
         // co the add field bat ki vi minh dang gia lap truy van
       });
 
       // sau khi mock het roi, va truyen du data de pass cac logic thi goi function
-      await qamController.doAddCategory(req, res);
+      await qamController.doAddEvent(req, res);
       expect(res.redirect).toHaveBeenCalledWith("/qam_index" , { "loginName": "Test@gmail.com"});
     })
   })
 
-  describe('Test get view category', () => {
+  describe('Test get view event', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       jest.resetAllMocks();
@@ -128,13 +128,13 @@ describe('Test qam controller', () => {
         }
       };
       const res = mockResponse();
-      jest.spyOn(Category, 'find').mockResolvedValueOnce([{
+      jest.spyOn(Event, 'find').mockResolvedValueOnce([{
         name: 'lll',
         // co the add field bat ki vi minh dang gia lap truy van
       }]);
-      await qamController.getViewCategory(req, res);
+      await qamController.getViewEvent(req, res);
 
-      expect(res.render).toHaveBeenCalledWith("qam/qamViewCategory", {"listCompare": [{"category": {"name": "lll"}, "compare": false}], "loginName": "Test@gmail.com"});
+      expect(res.render).toHaveBeenCalledWith("qam/qamViewEvent", {"listCompare": [{"event": {"name": "lll"}, "compare": false}], "loginName": "Test@gmail.com"});
     })
   })
 
@@ -156,7 +156,7 @@ describe('Test qam controller', () => {
     })
   })
 
-  describe('Test do search category', () => {
+  describe('Test do search event', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       jest.resetAllMocks();
@@ -172,14 +172,14 @@ describe('Test qam controller', () => {
       };
       const res = mockResponse();
 
-      jest.spyOn(Category, 'find').mockResolvedValueOnce([{
+      jest.spyOn(Event, 'find').mockResolvedValueOnce([{
         name: 'lll',
         // co the add field bat ki vi minh dang gia lap truy van
       }]);
 
       // sau khi mock het roi, va truyen du data de pass cac logic thi goi function
-      await qamController.searchCategory(req, res);
-      expect(res.render).toHaveBeenCalledWith("qam/qamViewCategory", {"listCompare": [{"category": {"name": "lll"}, "compare": false}], "loginName": "Test@gmail.com"});
+      await qamController.searchEvent(req, res);
+      expect(res.render).toHaveBeenCalledWith("qam/qamViewEvent", {"listCompare": [{"event": {"name": "lll"}, "compare": false}], "loginName": "Test@gmail.com"});
     })
   })
 })

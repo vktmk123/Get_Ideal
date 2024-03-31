@@ -48,13 +48,13 @@ app.get('/', (req, res) => {
 const authRoute = require("./routes/auth")
 var adminRoute = require('./routes/admin');
 var qamRoute = require('./routes/qam');
-var staffRoute = require('./routes/staff');
+var studentRoute = require('./routes/student');
 const qacRoute = require('./routes/qac');
 
 app.use("/", authRoute);
 app.use('/', adminRoute);
 app.use('/', qamRoute);
-app.use('/', staffRoute);
+app.use('/', studentRoute);
 app.use('/', qacRoute);
 
 const PORT = process.env.PORT || 3000;

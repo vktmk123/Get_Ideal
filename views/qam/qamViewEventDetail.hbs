@@ -1,71 +1,34 @@
 <html lang="en">
-<style>
-    .dropbtn {
-        background-color: #3498DB;
-        color: white;
-        padding: 16px;
-        font-size: 16px;
-        border: none;
-        cursor: pointer;
-    }
 
-    .dropbtn:hover,
-    .dropbtn:focus {
-        background-color: #2980B9;
-    }
-
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f1f1f1;
-        min-width: 160px;
-        overflow: auto;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-    }
-
-    .dropdown-content input {
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-    }
-
-    .dropdown input:hover {
-        background-color: #ddd;
-    }
-
-    .show {
-        display: block;
-    }
-</style>
 {{> head}}
 
 <body class="sb-nav-fixed">
-    {{> qacHeader}}
+    {{> qamHeader}}
+    <div class="container py-5" style="position: fixed; top: 8%; margin-left: 81%;">
+        <p style="margin-bottom: 0%;"><label>Sort By:</label></p>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <form method="post" action='/qam/qamViewEventDetail'>
+                <input type="hidden" name="idEvent" value="{{idEvent}}">
+                <input type="hidden" name="sortBy" value="like" />
+                <button type="submit" class="btn btn-secondary">Most Likes</button>
+            </form>
+            <form method="post" action='/qam/qamViewEventDetail'>
+                <input type="hidden" name="idEvent" value="{{idEvent}}">
+                <input type="hidden" name="sortBy" value="comment" />
+                <button type="submit" class="btn btn-secondary">Most Comments</button>
+            </form>
+            <form method="post" action='/qam/qamViewEventDetail'>
+                <input type="hidden" name="idEvent" value="{{idEvent}}">
+                <input type="hidden" name="sortBy" value="time" />
+                <button type="submit" class="btn btn-secondary">Latest Time</button>
+            </form>
+        </div>
+    </div>
     <div class="row">
-        <div class="col" style="margin: 5% 30%;">
-            {{#ifEquals distance5_ideas.length 0}}
-            {{else}}
-            <div class="dropdown">
-                <button onclick="myFunction()" class="dropbtn">Latest by ↓</button>
-                <div id="myDropdown" class="dropdown-content">
-                    <form action="/qac/viewLastestIdeas" method="POST">
-                        {{#each distance5_ideas}}
-                        <input type="submit" name="last" value="{{this}}">
-                        <br>
-                        {{/each}}
-                    </form>
-                </div>
-            </div>
-            {{/ifEquals}}
-            {{#each lastestIdeas}}
-            <div class="container py-5" style="margin-bottom: 3% ; background-color: rgba(225, 230, 238, 0.481);">
+        <div class="col" style="margin: 3% 30%;">
+            {{#each listFiles}}
+            <div class="container mt-5"
+                style=" border-radius: 13px; margin-bottom: 3% ; background-color: rgba(225, 230, 238, 0.481);">
                 <div class="row">
                     <div class="col">
                         <div class="row" style="margin-left: 1px;">
@@ -73,20 +36,29 @@
                                 <li class="list-group-item d-flex justify-content-between align-content-center"
                                     style="width: 700px">
                                     <div class="d-flex flex-row">
+                                        {{#if idea.annonymously}}
                                         <img src="https://img.icons8.com/color/100/000000/folder-invoices.png"
-                                            width="70" height="60" />
-                                        <div class="ml-1">
-                                            <h1><b>Idea name: </b>{{name}}</h1>
-                                            <span style="font-size: 12px;"><b>Time: </b>{{time}}</span>
-                                            <br>
-                                            <b style="font-size: 12px; margin-top: 10px; margin-bottom: 10px;">Document:
-                                            </b>
-                                            {{#each value}}
-                                            <span style="font-size: 12px; margin-top: 3px; ">
-                                                <a href="../../{{../this.linkValue}}/{{this}}">{{this}}</a>
-                                            </span>
-                                            <br>
-                                            {{/each}}
+                                            width="60" height="60" />
+                                        {{else}}
+                                        <img class="rounded-circle" src="/uploads/student/{{idea.author.img}}"
+                                            width="60px" height="60px">
+                                        {{/if}}
+                                        <div class="ml-5 mt-3" style="margin-left: 11px;">
+                                            <h1> {{idea.name}}</h1>
+                                            {{#if idea.annonymously}}
+                                            <span>- {{dateFormat idea.time "MMMM DD, YYYY HH:mm:ss"}}</span> <br>
+                                            {{else}}
+                                            <span> {{idea.author.name}}</span> <span>- {{dateFormat idea.time "MMMM DD,
+                                                YYYY
+                                                HH:mm:ss"}}</span> <br>
+                                            {{/if}}
+                                            <ul style="margin-left: -60px; margin-top: 5px;">
+                                                {{#each value}}
+                                                <li>
+                                                    <p><a href="../../{{../this.linkValue}}/{{this}}">{{this}}</a></p>
+                                                </li>
+                                                {{/each}}
+                                            </ul>
                                         </div>
                                     </div>
                                 </li>
@@ -96,32 +68,35 @@
                             <div class="col-sm-1">
                                 <div class="btn " style="font-size: 15px; border: none;" /disabled>
                                     <i class="far fa-thumbs-up"></i>
-                                    <i>{{n_likes}}</i>
+                                    <i>{{idea.like}}</i>
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="btn " type="submit" style="font-size: 15px; border: none;" /disabled>
                                     <i class="far fa-thumbs-down"></i>
-                                    <i>{{n_dislikes}}</i>
+                                    <i>{{idea.dislike}}</i>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div style="font-weight: 900px; font-size: 1.2rem; margin-top: 3px; border: none;">
-                                    {{comment}} Comments
+                            <div class="col-sm-1">
+                                <div class="btn " type="submit" style="font-size: 15px; border: none;" /disabled>
+                                    <i class="fa fa-comment" style=" color: #6a6e72;"></i>
+                                    <i>{{idea.comments.length}}</i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="margin-bottom: 10px;">
                     <div class="col">
                         <div style="width: 700px">
                             {{#ifEquals idea.comments.length 0}}
                             {{else}}
-                            <button class="see-less" style=" font-size: 1.2rem; border: none; color: #3e5745; ">See
+                            <button class="see-less"
+                                style=" font-size: 1.2rem; border: none; color:#3e5745; background: #e2e3e4;border-radius: 5px;">See
                                 Less...</button>
-                            <button class="see-more" style=" font-size: 1.2rem; border: none; color:#3e5745; ">Read more
-                                comments...</button>
+                            <button class="see-more"
+                                style="font-size: 1.2rem; border: none; color:#3e5745; background: #e2e3e4;border-radius: 5px; ">Read
+                                morecomments...</button>
                             {{/ifEquals}}
                             {{#each idea.comments}}
                             <div class="user-comment-box commented-section py-2" style="display:none;">
@@ -140,7 +115,6 @@
                                             <div class="media-body">
                                                 <h3>
                                                     {{#if this.annonymously}}
-                                                    Annonymously
                                                     {{else}}
                                                     {{this.author.name}}
                                                     {{/if}}
@@ -191,28 +165,49 @@
             {{/each}}
         </div>
     </div>
+    <center>
+        <div aria-label="Page navigation example" style="margin-left: 50%; margin-top: -5%">
+            <ul class="pagination">
+                <li class="page-item">
+                    <form method="post" action='/qam/qamViewEventDetail'>
+                        <input type="hidden" name="idEvent" value="{{idEvent}}">
+                        {{#ifEquals page 1}}
+                        <input type="hidden" name="noPage" value="1">
+                        {{else}}
+                        <input type="hidden" name="noPage" value="{{#minus page 1}} {{/minus}}">
+                        {{/ifEquals}}
+                        <button type="submit" class="page-link" style="width: 40px; height: 40px;"><span
+                                aria-hidden="true">&laquo;</span></button>
+                    </form>
+                </li>
+                {{#times noPage}}
+                <li class="page-item">
+                    <form method="post" action='/qam/qamViewEventDetail'>
+                        <input type="hidden" name="idEvent" value="{{../idEvent}}">
+                        <input type="hidden" name="noPage" value="{{this}}">
+                        {{#ifEquals ../page this}}
+                        <button type="submit" class="page-link" style="width: 40px; height: 40px; background-color: #03d1fa52;">{{this}}</button>
+                        {{else}}
+                        <button type="submit" class="page-link" style="width: 40px; height: 40px;">{{this}}</button>
+                        {{/ifEquals}}
+                    </form>
+                </li>
+                {{/times}}
+                <li class="page-item">
+                    <form method="post" action='/qam/qamViewEventDetail'>
+                        <input type="hidden" name="idEvent" value="{{idEvent}}">
+                        {{#ifEquals page noPage}}
+                        <input type="hidden" name="noPage" value="{{page}}">
+                        {{else}}
+                        <input type="hidden" name="noPage" value="{{#plus page 1}} {{/plus}}">
+                        {{/ifEquals}}
+                        <button type="submit" class="page-link" style="width: 40px; height: 40px;"><span aria-hidden="true">&raquo;</span></button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </center>
 </body>
-<script>
-    /* When the user clicks on the button, 
-    toggle between hiding and showing the dropdown content */
-    function myFunction() {
-        document.getElementById("myDropdown").classList.toggle("show");
-    }
-
-    // Close the dropdown if the user clicks outside of it
-    window.onclick = function (event) {
-        if (!event.target.matches('.dropbtn')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            var i;
-            for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-            }
-        }
-    }
-</script>
 <script>
     $(function () {
         $(".see-less").hide();

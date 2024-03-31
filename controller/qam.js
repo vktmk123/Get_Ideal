@@ -1,6 +1,6 @@
 const Account = require('../models/user');
 const bcrypt = require('bcryptjs');
-const Category = require('../models/category');
+const Event = require('../models/event');
 const idea = require('../models/ideas');
 const User = require('../models/user');
 const validation = require('./validation');
@@ -65,11 +65,11 @@ exports.doChangePassword = async (req, res) => {
     }
 }
 
-exports.getAddCategory = async (req, res) => {
-    res.render('qam/qamAddCategory', { loginName: req.session.email })
+exports.getAddEvent = async (req, res) => {
+    res.render('qam/qamAddEvent', { loginName: req.session.email })
 }
 
-exports.doAddCategory = async (req, res) => {
+exports.doAddEvent = async (req, res) => {
     const fs = require("fs");
     let date = new Date();
     let newDate = new Date();
@@ -124,7 +124,7 @@ exports.doAddCategory = async (req, res) => {
             console.log("Given Directory already exists !!");
         }
     });
-    await Category.create({
+    await Event.create({
         name: req.body.name,
         description: req.body.description,
         dateStart: date,
@@ -134,32 +134,32 @@ exports.doAddCategory = async (req, res) => {
     res.redirect('/qam_index');
 }
 
-exports.getViewCategory = async (req, res) => {
-    let listCategory = await Category.find();
+exports.getViewEvent = async (req, res) => {
+    let listEvent = await Event.find();
     let tempDate = new Date();
     let listCompare = [];
-    listCategory.forEach(element =>{
+    listEvent.forEach(element =>{
         listCompare.push({
             compare: tempDate > element.dateEnd,
-            category: element
+            event: element
         });
     })
     // console.log(listCompare)
-    // let compare = tempDate > aCategory.dateEnd;
-    res.render('qam/qamViewCategory', { listCompare: listCompare, loginName: req.session.email })
+    // let compare = tempDate > aEvent.dateEnd;
+    res.render('qam/qamViewEvent', { listCompare: listCompare, loginName: req.session.email })
 }
 
-exports.getCategoryDetail = async (req, res) => {
+exports.getEventDetail = async (req, res) => {
     console.log('1')
     let id;
     let noPage;
-    //console.log(req.body.idCategory);
+    //console.log(req.body.idEvent);
     let page = 1;
     if(req.body.noPage != undefined){
         page = req.body.noPage;
     }
     if (req.query.id === undefined) {
-        id = req.body.idCategory;
+        id = req.body.idEvent;
     } else {
         id = req.query.id;
     }
@@ -170,10 +170,10 @@ exports.getCategoryDetail = async (req, res) => {
     // let id = req.query.id;
     let listFiles = [];
     try {
-        let listIdeas = await idea.find({ categoryID: id }).populate({path:'comments', populate : { path: 'author'}}).populate('author');
-        let aCategory = await Category.findById(id);
+        let listIdeas = await idea.find({ eventID: id }).populate({path:'comments', populate : { path: 'author'}}).populate('author');
+        let aEvent = await Event.findById(id);
         let tempDate = new Date();
-        let compare = tempDate > aCategory.dateEnd;
+        let compare = tempDate > aEvent.dateEnd;
         const fs = require("fs");
         var counter = 0;
         function callBack() {
@@ -256,8 +256,8 @@ exports.getCategoryDetail = async (req, res) => {
                 listFiles = listFiles.slice(s,s+5);
                 console.log(noPage);
                 console.log(listFiles.length);
-                //res.render('admin/viewCategoryDetail', { idCategory: id, listFiles: listFiles, nameIdea: nameIdea, listComment: listComment, compare: compare, loginName: req.session.email });
-                res.render('qam/qamViewCategoryDetail', { idCategory: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
+                //res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, nameIdea: nameIdea, listComment: listComment, compare: compare, loginName: req.session.email });
+                res.render('qam/qamViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
             };
         };
         console.log(listIdeas);
@@ -275,24 +275,24 @@ exports.getCategoryDetail = async (req, res) => {
                 });
             })
         }else{
-            res.render('qam/qamViewCategoryDetail', { idCategory: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
+            res.render('qam/qamViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
         }
     } catch (e) {
         // console.log(e);
-        res.render('qam/qamViewCategoryDetail', { idCategory: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });
+        res.render('qam/qamViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });
     }
 }
 
 
-exports.deleteCategory = async (req, res) => {
+exports.deleteEvent = async (req, res) => {
     let id = req.query.id;
-    let dir = await Category.findById(id);
-    Category.findByIdAndRemove(id).then(data = {});
+    let dir = await Event.findById(id);
+    Event.findByIdAndDelete(id).then(data = {});
     const path = 'public/folder/'+dir.name
     // include node fs module
     const fs = require('fs');
     fs.rm(path, { recursive: true }, () => console.log('delete done'));
-    res.redirect('/qam/qamViewCategory');
+    res.redirect('/qam/qamViewEvent');
 }
 
 exports.viewLastestIdeas = async (req, res) => {
@@ -323,7 +323,7 @@ exports.viewLastestIdeas = async (req, res) => {
                 linkValue: i.url.slice(7),
                 name: i.name,
                 comment: i.comment,
-                idCategory: i.categoryID,
+                idEvent: i.eventID,
                 n_likes: i.like,
                 n_dislikes: i.dislike,
                 time: i.time.toString().slice(0, -25)
@@ -333,27 +333,27 @@ exports.viewLastestIdeas = async (req, res) => {
     res.render('qam/viewLastestIdeas', { lastestIdeas: lastestIdeas, loginName: req.session.email });
 }
 
-exports.editCategory = async (req, res) => {
+exports.editEvent = async (req, res) => {
     let id = req.query.id;
-    let aCategory = await Category.findById(id);
-    res.render('qam/qamEditCategory', { aCategory: aCategory, loginName: req.session.email })
+    let aEvent = await Event.findById(id);
+    res.render('qam/qamEditEvent', { aEvent: aEvent, loginName: req.session.email })
 }
 
-exports.updateCategory = async (req, res) => {
+exports.updateEvent = async (req, res) => {
     let id = req.body.id;
-    let aCategory = await Category.findById(id);
-    console.log(aCategory)
-    aCategory.name = req.body.name;
-    aCategory.description = req.body.description;
+    let aEvent = await Event.findById(id);
+    console.log(aEvent)
+    aEvent.name = req.body.name;
+    aEvent.description = req.body.description;
     console.log(req.body.name)
     console.log(req.body.description)
     try {
-        aCategory = await aCategory.save();
-        res.redirect('/qam/qamViewCategory');
+        aEvent = await aEvent.save();
+        res.redirect('/qam/qamViewEvent');
     }
     catch (error) {
         console.log(error);
-        res.redirect('/qam/qamViewCategory');
+        res.redirect('/qam/qamViewEvent');
     }
 }
 
@@ -390,33 +390,29 @@ exports.getMostViewed = async (req, res) => {
     let mostViewedIdeas = [];
     let counter = 0;
     for (let i of top5Views) {
-        fs.readdir(i.url, (err, files) => {
-            mostViewedIdeas.push({
-                idea: i,
-                id: i._id,
-                value: files,
-                linkValue: i.url.slice(7),
-                name: i.name,
-                comment: i.comments.length,
-                // comment_content: comments_contents,
-                idCategory: i.categoryID,
-                n_likes: i.like,
-                n_dislikes: i.dislike,
-                // authors: authors_name,
-                time: i.time.toString().slice(0, -25),
-                // time_comment: time_comments
+        if (i && i.url) {
+            fs.readdir(i.url, (err, files) => {
+                mostViewedIdeas.push({
+                    idea: i,
+                    id: i._id,
+                    value: files,
+                    linkValue: i.url.slice(7),
+                    name: i.name,
+                    comment: i.comments.length,
+                    // comment_content: comments_contents,
+                    idEvent: i.eventID,
+                });
             });
-        });
-        counter = counter + 1;
-    };
+        }
+    }
     res.render('qam/qamMostViewed', { mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
 }
 
 exports.downloadZip = async (req, res) => {
     const fs = require("fs");
     let id = req.query.id;
-    let aCategory = await Category.findById(id);
-    let folderpath = (__dirname.slice(0,-10) + aCategory.url)
+    let aEvent = await Event.findById(id);
+    let folderpath = (__dirname.slice(0,-10) + aEvent.url)
 
     var zp = new AdmZip();
     zp.addLocalFolder(folderpath);
@@ -433,13 +429,13 @@ exports.downloadZip = async (req, res) => {
 
 exports.downloadCSV = async (req, res) => {
     let id = req.query.id;
-    let aCategory = await Category.findById(id);
-    let path= aCategory.name + '.csv'
+    let aEvent = await Event.findById(id);
+    let path= aEvent.name + '.csv'
     const csvWriter = createCsvWriter({
         path: path,
         header: [
           {id: '_id', title: 'ID'},
-          {id: 'category', title: 'Category Name'},
+          {id: 'event', title: 'Event Name'},
           {id: 'name', title: 'Name'},
           {id: 'url', title: 'URL'},
           {id: 'author', title: 'Author'},
@@ -450,7 +446,7 @@ exports.downloadCSV = async (req, res) => {
           {id: '__v', title: '__v'}
         ]
     });
-    let listIdeas = await idea.find({ categoryID: id }).populate({path:'comments', populate : { path: 'author'}}).populate('author').populate('categoryID')
+    let listIdeas = await idea.find({ eventID: id }).populate({path:'comments', populate : { path: 'author'}}).populate('author').populate('eventID')
     let CSVAttribute = [];
     listIdeas.forEach(element => {
         let listComment = []
@@ -459,7 +455,7 @@ exports.downloadCSV = async (req, res) => {
         })
         CSVAttribute.push({
             _id: element._id,
-            category: element.categoryID.name,
+            event: element.eventID.name,
             name: element.name,
             url: element.url,
             author: element.author.name,
@@ -477,7 +473,7 @@ exports.downloadCSV = async (req, res) => {
 
 exports.numberOfIdeasByYear = async (req, res) => {
     let yearStart = 2020;
-    let yearEnd = 2022;
+    let yearEnd = 2025;
     if (req.body == {}) {
         //console.log(req.body)
         yearStart = parseInt(req.body.from);
@@ -526,16 +522,16 @@ exports.numberOfIdeasByYear2 = async (req, res) => {
     let dateE = new Date(year + "-12-31");
     let data = [];
     console.log(dateE)
-    let listCategory = await Category.find({
+    let listEvent = await Event.find({
         "dateStart": {
             $gte: dateS,
             $lt: dateE
         }
     });
     let counter = 0;
-    listCategory.forEach(async (i) => {
+    listEvent.forEach(async (i) => {
         let noIdeas = await idea.find({
-            "categoryID": i._id, "time": {
+            "eventID": i._id, "time": {
                 $gte: dateS,
                 $lt: dateE
             }
@@ -545,7 +541,7 @@ exports.numberOfIdeasByYear2 = async (req, res) => {
             value: noIdeas
         });
         counter += 1;
-        if (counter === listCategory.length) {
+        if (counter === listEvent.length) {
             console.log(data);
             res.render('qam/numberOfIdeasByYear2', { data: JSON.stringify(data), loginName: req.session.email })
         }
@@ -553,7 +549,7 @@ exports.numberOfIdeasByYear2 = async (req, res) => {
 }
 
 exports.numberOfPeople = async (req, res) => {
-    let role = ['QAmanager', 'QAcoordinator', 'Staff'];
+    let role = ['QAmanager', 'QAcoordinator', 'Student'];
     let data = [];
     let counter = 0;
     role.forEach(async (i) => {
@@ -570,28 +566,28 @@ exports.numberOfPeople = async (req, res) => {
     });
 }
 
-exports.searchCategory = async (req, res) => {
+exports.searchEvent = async (req, res) => {
 
     const searchText = req.body.keyword;
     console.log(req.body);
-    let listCategory;
+    let listEvent;
     let listCompare = [];
     let checkEmpty = validation.checkEmpty(searchText);
     const searchCondition = new RegExp(searchText, 'i');
     if (!checkEmpty) {
-        res.redirect('/qam/qamViewCategory');
+        res.redirect('/qam/qamViewEvent');
     }
     else {
-        listCategory = await Category.find({ name: searchCondition });
+        listEvent = await Event.find({ name: searchCondition });
         let tempDate = new Date();
         let listCompare = [];
-        listCategory.forEach(element =>{
+        listEvent.forEach(element =>{
             listCompare.push({
                 compare: tempDate > element.dateEnd,
-                category: element
+                event: element
             });
         })
         console.log(listCompare)
-        res.render('qam/qamViewCategory', { listCompare: listCompare, loginName: req.session.email });
+        res.render('qam/qamViewEvent', { listCompare: listCompare, loginName: req.session.email });
     }
 }
