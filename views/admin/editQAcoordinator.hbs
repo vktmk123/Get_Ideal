@@ -13,7 +13,8 @@
             <div class="row" style="margin-bottom: 22px;">
                 <div class="col-md-3 border-right" style="padding-right: 20px;">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" width="150px" src="/uploads/QAcoordinator/{{aQAcoordinator.img}}">
+                        <img class="rounded-circle mt-5" width="150px"
+                            src="/uploads/QAcoordinator/{{aQAcoordinator.img}}">
                     </div>
                 </div>
                 <div class="col-md-8 border-right" style="margin-top: 12px;">
@@ -41,7 +42,7 @@
                             <div class="form-group">
                                 <label>Date of Birth</label>
                                 <input class="form-control" type="date" name="date"
-                                        value="{{dateFormat aQAcoordinator.dateOfBirth "YYYY-MM-DD"}}" />
+                                    value="{{dateFormat aQAcoordinator.dateOfBirth " YYYY-MM-DD"}}" />
                             </div>
                         </div>
                         <div class="col mb-3">
@@ -59,18 +60,53 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Faculty Selection Dropdown -->
                         <div class="row">
-                            <div class="col d-flex justify-content-end">
-                                <button class="btn btn-primary" type="submit">Save</button>
-                                <a href="/admin/viewQualityAssuranceCoordinator" class="btn btn-warning">Cancel</a>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="faculty">Faculty</label>
+                                    <select class="form-control" id="faculty" name="faculty">
+                                        <option value="" disabled>Select Faculty</option>
+                                        {{#each faculties}}
+                                        <option value="{{_id}}" {{#if (eq _id selectedFacultyId)}}selected{{/if}}>
+                                            {{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col d-flex justify-content-end">
+                                    <button class="btn btn-primary" type="submit">Save</button>
+                                    <a href="/admin/viewQualityAssuranceCoordinator" class="btn btn-warning">Cancel</a>
+                                </div>
+                            </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     <script src="/js/validate.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/admin/getFaculties');
+                const faculties = await response.json();
+
+                const facultySelect = document.getElementById('faculty');
+
+                faculties.forEach(faculty => {
+                    const option = document.createElement('option');
+                    option.value = faculty._id;
+                    option.textContent = faculty.name;
+                    facultySelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error fetching faculties:', error);
+            }
+        });
+
+    </script>
 </body>
 
 </html>

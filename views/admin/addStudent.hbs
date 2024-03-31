@@ -20,21 +20,6 @@
                     <form class="form" method="post" action='/admin/doAddStudent' id="add" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col">
-                                <br>
-                                <label>Department</label> <br>
-                                <div class="form-check form-check-inline col-md-3">
-                                    <label class="form-check-label" for="inlineCheckbox1">Academic</label>
-                                    <input class="form-check-input" type="radio" name="department" id="inlineCheckbox1" value="Academic"  required="required"/>
-                                    
-                                </div>
-                                <div class="form-check form-check-inline ">
-                                    <input class="form-check-input" type="radio"  name="department" id="inlineCheckbox2" value="Support" />
-                                    <label class="form-check-label" for="inlineCheckbox2">Support</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
                                 <div class="form-group">
                                     <label>Full Name</label>
                                     <input class="form-control" type="text" name="name" placeholder="Full name"
@@ -46,7 +31,6 @@
                                     <label>Email</label>
                                     <input class="form-control" type="text" placeholder="user@example.com" name="email"
                                         required />
-                                    
                                 </div>
                             </div>
                         </div>
@@ -63,27 +47,60 @@
                                     <input type="file" name="picture" id="picture" accept="image/*" />
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <div class="form-group">
-                                        <label>Address</label>
-                                        <textarea class="form-control" rows="5" placeholder="Address"
-                                            name="address"></textarea>
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <textarea class="form-control" rows="5" placeholder="Address" name="address"></textarea>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col d-flex justify-content-end">
-                                    <button class="btn btn-primary" type="submit">Save</button>
-                                    <a href="/admin/viewStudent" class="btn btn-warning">Cancel</a>
+                        </div>
+                        <!-- Faculty Selection Dropdown -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="faculty">Faculty</label>
+                                    <select class="form-control" id="faculty" name="faculty" >
+                                        <option value="" textContent="Select" selected disabled> Faculty </option>
+                                    </select>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-end">
+                                <button class="btn btn-primary" type="submit">Save</button>
+                                <a href="/admin/viewStudent" class="btn btn-warning">Cancel</a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     <script src="/js/validate.js"></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/admin/getFaculties');
+            const faculties = await response.json();
+            console.log(faculties);
+
+            const facultySelect = document.getElementById('faculty');
+
+            faculties.forEach(faculty => {
+                const option = document.createElement('option');
+                option.value = faculty._id; // Assuming _id is the unique identifier of the faculty
+                option.textContent = faculty.name; // Assuming 'name' is the field you want to display
+                console.log(faculty._id, faculty.name);
+                facultySelect.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error('Error fetching faculties:', error);
+        }
+    });
+</script>
 </body>
 
 </html>

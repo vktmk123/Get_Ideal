@@ -20,21 +20,6 @@
                     <form class="form" method="post" action='/admin/doEditStudent' id="add" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col">
-                                <p><b>Department</b></p>
-                                <div class="form-check form-check-inline col-md-3">
-                                    <label class="form-check-label" for="inlineCheckbox1">Academic</label>
-                                    <input class="form-check-input" type="radio" name="department" id="inlineCheckbox1"
-                                        value="Academic" required="required" {{#ifEquals aStudent.type "Academic"}} checked {{/ifEquals}} />
-                                </div>
-                                <div class="form-check form-check-inline ">
-                                    <input class="form-check-input" type="radio" name="department" id="inlineCheckbox2"
-                                        value="Support" {{#ifEquals aStudent.type "Support"}} checked {{/ifEquals}}/>
-                                    <label class="form-check-label" for="inlineCheckbox2">Support</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
                                 <div class="form-group">
                                     <input type="hidden" name="id" value="{{aStudent._id}}">
                                     <label>Full Name</label>
@@ -73,6 +58,20 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Faculty Selection Dropdown -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="faculty">Faculty</label>
+                                    <select class="form-control" id="faculty" name="faculty">
+                                        <option value="" disabled>Select Faculty</option>
+                                        {{#each faculties}}
+                                        <option value="{{_id}}" {{#if (eq _id selectedFacultyId)}}selected{{/if}}>
+                                            {{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
                         <div class="row">
                             <div class="col d-flex justify-content-end">
                                 <button class="btn btn-primary" type="submit">Save</button>
@@ -85,6 +84,27 @@
         </div>
     </div>
     <script src="/js/validate.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/admin/getFaculties');
+                const faculties = await response.json();
+
+                const facultySelect = document.getElementById('faculty');
+
+                faculties.forEach(faculty => {
+                    const option = document.createElement('option');
+                    option.value = faculty._id;
+                    option.textContent = faculty.name;
+                    facultySelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error fetching faculties:', error);
+            }
+        });
+
+    </script>
 </body>
 
 </html>

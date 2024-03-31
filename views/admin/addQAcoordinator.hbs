@@ -57,6 +57,17 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Faculty Selection Dropdown -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="faculty">Faculty</label>
+                                    <select class="form-control" id="faculty" name="faculty" >
+                                        <option value="" textContent="Select" selected disabled> Faculty </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col d-flex justify-content-end">
                                 <button class="btn btn-primary" type="submit">Save</button>
@@ -69,6 +80,28 @@
         </div>
     </div>
     <script src="/js/validate.js"></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/admin/getFaculties');
+            const faculties = await response.json();
+            console.log(faculties);
+
+            const facultySelect = document.getElementById('faculty');
+
+            faculties.forEach(faculty => {
+                const option = document.createElement('option');
+                option.value = faculty._id; // Assuming _id is the unique identifier of the faculty
+                option.textContent = faculty.name; // Assuming 'name' is the field you want to display
+                console.log(faculty._id, faculty.name);
+                facultySelect.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error('Error fetching faculties:', error);
+        }
+    });
+</script>
 </body>
 
 </html>
