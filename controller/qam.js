@@ -4,7 +4,6 @@ const Event = require('../models/event');
 const idea = require('../models/ideas');
 const User = require('../models/user');
 const validation = require('./validation');
-const Comment = require('../models/comments');
 const AdmZip = require('adm-zip');
 var mongoose = require('mongoose');
 const fs = require("fs");
@@ -178,43 +177,8 @@ exports.getEventDetail = async (req, res) => {
         var counter = 0;
         function callBack() {
             if (listIdeas.length === counter) {
-                if (sortBy === 'like') {
-                    listFiles.sort((a, b) => {
-                        if (b.idea.like < a.idea.like) {
-                            return -1;
-                        }
-                        else if (b.idea.like > a.idea.like) {
-                            return 1;
-                        } else {
-                            if (a.idea._id < b.idea._id) {
-                                return -1;
-                            }
-                            if (a.idea._id > b.idea._id) {
-                                return 1;
-                            }
-                        };
-                    });
-                    // console.log('like');
-                }
-                else if (sortBy === 'comment') {
-                    listFiles.sort((a, b) => {
-                        if (b.idea.comments.length < a.idea.comments.length) {
-                            return -1;
-                        }
-                        else if (b.idea.comments.length > a.idea.comments.length) {
-                            return 1;
-                        } else {
-                            if (a.idea._id < b.idea._id) {
-                                return -1;
-                            }
-                            if (a.idea._id > b.idea._id) {
-                                return 1;
-                            }
-                        };
-                    });
-                    // console.log('comment');
-                }
-                else if (sortBy === 'time') {
+                // console.log('comment');
+                if (sortBy === 'time') {
                     listFiles.sort((a, b) => {
                         const A = new Date(a.idea.time)
                         const B = new Date(b.idea.time)
@@ -295,44 +259,6 @@ exports.deleteEvent = async (req, res) => {
     res.redirect('/qam/qamViewEvent');
 }
 
-exports.viewLastestIdeas = async (req, res) => {
-
-    let n_last = Number(req.body.last);
-    let listIdeas = await idea.find().populate('comments');
-    let len_ideas = listIdeas.length;
-    if (len_ideas < n_last) {
-        n_last = len_ideas;
-    }
-    let last_ideas = [];
-    if (len_ideas == 0) {
-        last_ideas = [];
-    }
-    else if (len_ideas < 5) {
-        last_ideas = listIdeas.reverse();
-    }
-    else {
-        last_ideas = listIdeas.slice(-n_last, len_ideas).reverse();
-    }
-    let lastestIdeas = [];
-    last_ideas.forEach(async (i) => {
-        fs.readdir(i.url, (err, files) => {
-            lastestIdeas.push({
-                idea: i,
-                id: i._id,
-                value: files,
-                linkValue: i.url.slice(7),
-                name: i.name,
-                comment: i.comment,
-                idEvent: i.eventID,
-                n_likes: i.like,
-                n_dislikes: i.dislike,
-                time: i.time.toString().slice(0, -25)
-            });
-        });
-    });
-    res.render('qam/viewLastestIdeas', { lastestIdeas: lastestIdeas, loginName: req.session.email });
-}
-
 exports.editEvent = async (req, res) => {
     let id = req.query.id;
     let aEvent = await Event.findById(id);
@@ -357,57 +283,6 @@ exports.updateEvent = async (req, res) => {
     }
 }
 
-exports.getMostViewed = async (req, res) => {
-    let listIdeas = await idea.find().populate('comments');
-    let n_ideas = listIdeas.length;
-    // check if idea was added
-    let visited_max = [];
-    for (let m = 0; m < n_ideas; m++) {
-        visited_max.push(0);
-    }
-    // count total 'view = like+dis_like+comment'
-    let countViews = [];
-    for (let idea of listIdeas) {
-        countViews.push(idea.like + idea.dislike + idea.comments.length);
-    }
-    let top5Views = [];
-    let i = 0;
-    while (i < 5) {
-        let fake_max = -1;
-        let idx_max = -1;
-        let j = 0;
-        while (j < n_ideas) {
-            if (visited_max[j] == 0 && countViews[j] >= fake_max) {
-                fake_max = countViews[j];
-                idx_max = j;
-            }
-            j++;
-        }
-        visited_max[idx_max] = 1;
-        top5Views.push(listIdeas[idx_max]);
-        i++;
-    }
-    let mostViewedIdeas = [];
-    let counter = 0;
-    for (let i of top5Views) {
-        if (i && i.url) {
-            fs.readdir(i.url, (err, files) => {
-                mostViewedIdeas.push({
-                    idea: i,
-                    id: i._id,
-                    value: files,
-                    linkValue: i.url.slice(7),
-                    name: i.name,
-                    comment: i.comments.length,
-                    // comment_content: comments_contents,
-                    idEvent: i.eventID,
-                });
-            });
-        }
-    }
-    res.render('qam/qamMostViewed', { mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
-}
-
 exports.downloadZip = async (req, res) => {
     const fs = require("fs");
     let id = req.query.id;
@@ -425,50 +300,6 @@ exports.downloadZip = async (req, res) => {
     res.set('Content-Disposition', `attachment; filename=${file_after_download}`);
     res.set('Content-Length', data.length);
     res.send(data);
-}
-
-exports.downloadCSV = async (req, res) => {
-    let id = req.query.id;
-    let aEvent = await Event.findById(id);
-    let path= aEvent.name + '.csv'
-    const csvWriter = createCsvWriter({
-        path: path,
-        header: [
-          {id: '_id', title: 'ID'},
-          {id: 'event', title: 'Event Name'},
-          {id: 'name', title: 'Name'},
-          {id: 'url', title: 'URL'},
-          {id: 'author', title: 'Author'},
-          {id: 'time', title: 'Time'},
-          {id: 'like', title: 'Like'},
-          {id: 'dislike', title: 'Dislike'},
-          {id: 'comment', title: 'Comments'},
-          {id: '__v', title: '__v'}
-        ]
-    });
-    let listIdeas = await idea.find({ eventID: id }).populate({path:'comments', populate : { path: 'author'}}).populate('author').populate('eventID')
-    let CSVAttribute = [];
-    listIdeas.forEach(element => {
-        let listComment = []
-        element.comments.forEach(i => {
-            listComment.push(i.comment)
-        })
-        CSVAttribute.push({
-            _id: element._id,
-            event: element.eventID.name,
-            name: element.name,
-            url: element.url,
-            author: element.author.name,
-            time: element.time,
-            like: element.like,
-            dislike: element.dislike,
-            comment: listComment
-        })
-    })
-    const data = CSVAttribute;
-    csvWriter
-    .writeRecords(data)
-    .then(()=> res.download(path));
 }
 
 exports.numberOfIdeasByYear = async (req, res) => {

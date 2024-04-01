@@ -23,23 +23,10 @@ const ideas = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    like: { 
-        type: Number,
-        required: true
-    },
-    dislike:{
-        type: Number,
-        required: true
-    },
     comments:[{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'comments'
     }],
-    annonymously: {
-        type: Boolean,
-        require : true,
-        default: false
-    },
 });
 
 module.exports = mongoose.model('ideas', ideas);

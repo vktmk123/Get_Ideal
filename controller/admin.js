@@ -60,6 +60,7 @@ exports.doChangePassword = async (req, res) => {
     console.log(err);
   }
 };
+
 //QAmanager
 exports.viewQAmanager = async (req, res) => {
   let listQAmanager = await QAmanager.find();
@@ -69,9 +70,11 @@ exports.viewQAmanager = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
 exports.addQAmanager = async (req, res) => {
   res.render("admin/addQAmanager", { loginName: req.session.email });
 };
+
 exports.doAddQAmanager = async (req, res) => {
   //console.log(req.body)
   let newQAmanager;
@@ -95,7 +98,7 @@ exports.doAddQAmanager = async (req, res) => {
     email: req.body.email,
     password: "12345678",
     role: "QAmanager",
-  });
+  }); 
   try {
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(newAccount.password, salt, (err, hash) => {
@@ -112,6 +115,7 @@ exports.doAddQAmanager = async (req, res) => {
     // res.redirect('/admin/viewQualityAssuranceManager');
   }
 };
+
 exports.editQAmanager = async (req, res) => {
   let id = req.query.id;
   let aQAmanager = await QAmanager.findById(id);
@@ -121,6 +125,7 @@ exports.editQAmanager = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
 exports.doEditQAmanager = async (req, res) => {
   let id = req.body.id;
   let aQAmanager = await QAmanager.findById(id);
@@ -186,6 +191,7 @@ exports.getFaculties = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 //QAcoordinator
 exports.viewQAcoordinator = async (req, res) => {
   let listQAcoordinator = await QAcoordinator.find().populate("faculty");
@@ -194,9 +200,11 @@ exports.viewQAcoordinator = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
 exports.addQAcoordinator = async (req, res) => {
   res.render("admin/addQAcoordinator", { loginName: req.session.email });
 };
+
 exports.doAddQAcoordinator = async (req, res) => {
   let newQAcoordinator;
   console.log(req.body);
@@ -427,6 +435,7 @@ exports.viewEvent = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
 exports.searchEvent = async (req, res) => {
   const searchText = req.body.keyword;
   let listEvent;
@@ -479,8 +488,6 @@ exports.doEditDate = async (req, res) => {
   }
 };
 
-//view
-
 exports.viewSubmittedIdeas = async (req, res) => {
   let listEvent = await event.find();
   res.render("admin/viewSubmittedIdeas", {
@@ -488,10 +495,12 @@ exports.viewSubmittedIdeas = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
 exports.viewEventDetail = async (req, res) => {
   let id;
   let noPage;
   let page = 1;
+
   if (req.body.noPage != undefined) {
       page = req.body.noPage;
   }
@@ -500,10 +509,7 @@ exports.viewEventDetail = async (req, res) => {
   } else {
       id = req.query.id;
   }
-  if (req.body.sortBy != undefined) {
-      req.session.sort = req.body.sortBy;
-  }
-  let sortBy = req.session.sort;
+
   let listFiles = [];
   try {
       let listIdeas = await idea.find({ eventID: id }).populate({path:'comments', populate : { path: 'author'}}).populate('author');
@@ -514,60 +520,7 @@ exports.viewEventDetail = async (req, res) => {
       var counter = 0;
       function callBack() {
           if (listIdeas.length === counter) {
-              if (sortBy === 'like') {
-                  listFiles.sort((a, b) => {
-                      if (b.idea.like < a.idea.like) {
-                          return -1;
-                      }
-                      else if (b.idea.like > a.idea.like) {
-                          return 1;
-                      } else {
-                          if (a.idea._id < b.idea._id) {
-                              return -1;
-                          }
-                          if (a.idea._id > b.idea._id) {
-                              return 1;
-                          }
-                      };
-                  });
-              }
-              else if (sortBy === 'comment') {
-                  listFiles.sort((a, b) => {
-                      if (b.idea.comments.length < a.idea.comments.length) {
-                          return -1;
-                      }
-                      else if (b.idea.comments.length > a.idea.comments.length) {
-                          return 1;
-                      } else {
-                          if (a.idea._id < b.idea._id) {
-                              return -1;
-                          }
-                          if (a.idea._id > b.idea._id) {
-                              return 1;
-                          }
-                      };
-                  });
-              }
-              else if (sortBy === 'time') {
-                  listFiles.sort((a, b) => {
-                      const A = new Date(a.idea.time)
-                      const B = new Date(b.idea.time)
-                      if (A < B) {
-                          return 1;
-                      }
-                      else if (A > B) {
-                          return -1;
-                      }
-                      else{
-                          if (a.idea._id < b.idea._id) {
-                              return -1;
-                          }
-                          if (a.idea._id > b.idea._id) {
-                              return 1;
-                          }
-                      };
-                  });
-              } else {
+
                   listFiles.sort((a, b) => {
                       if (a.idea._id < b.idea._id) {
                           return -1;
@@ -576,16 +529,17 @@ exports.viewEventDetail = async (req, res) => {
                           return 1;
                       }
                   });
-              }
+              
               noPage = Math.floor(listIdeas.length / 5);
               if (listIdeas.length % 5 != 0) {
                   noPage += 1
               }
               let s = (page - 1) * 5;
               listFiles = listFiles.slice(s, s + 5);
-              res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
+              res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, noPage: noPage, page: page, loginName: req.session.email });  
           };
       };
+
       if (listIdeas.length != 0){
           listIdeas.forEach(async (i) => {
               fs.readdir(i.url, (err, files) => {
@@ -600,12 +554,13 @@ exports.viewEventDetail = async (req, res) => {
               });
           })
       }else{
-          res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
+          res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, noPage: noPage, page: page, loginName: req.session.email });  
       }
   } catch (e) {
     console.log("123")
       console.log(e);
-      res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });
+      res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, compare: compare, noPage: noPage, page: page, loginName: req.session.email });
   }
 }
+
 

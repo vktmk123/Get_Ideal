@@ -14,14 +14,10 @@ router.get('/qam/qamViewEventDetail', isQAM, qamController.getEventDetail);
 router.post('/qam/qamViewEventDetail', isQAM, qamController.getEventDetail);
 router.get('/qam/qamDeleteEvent', isQAM, qamController.deleteEvent);
 
-router.get('/qam/viewLastestIdeas', isQAM, qamController.viewLastestIdeas);
-router.post('/qam/viewLastestIdeas', isQAM, qamController.viewLastestIdeas);
 router.get('/qam/qamEditEvent', isQAM, qamController.editEvent);
 router.post('/qam/doEditEvent', isQAM, qamController.updateEvent);
-router.get('/qam/viewMostViewed', isQAM, qamController.getMostViewed);
-router.post('/qam/viewMostViewed', isQAM, qamController.getMostViewed);
+
 router.get('/qam/downloadZip', isQAM, qamController.downloadZip);
-router.get('/qam/downloadCSV', isQAM, qamController.downloadCSV);
 
 router.get('/qam/numberOfIdeasByYear', isQAM, qamController.numberOfIdeasByYear);
 router.post('/qam/numberOfIdeasByYear', isQAM, qamController.numberOfIdeasByYear);
