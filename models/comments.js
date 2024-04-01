@@ -12,7 +12,7 @@ const comments = new mongoose.Schema({
     },
     author:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Staff',
+        ref: 'Student',
         require : true
     },
     time:{

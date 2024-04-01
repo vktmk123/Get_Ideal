@@ -7,7 +7,7 @@ $(function () {
       },
       "Please check your input."
     );
-    $("#addStaff").validate(
+    $("#addStudent").validate(
       {
         rules:
         {
@@ -48,7 +48,7 @@ $(function () {
       },
       "Please check your input."
     );
-    $("#updateStaff").validate(
+    $("#updateStudent").validate(
       {
         rules:
         {
