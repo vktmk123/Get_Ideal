@@ -88,23 +88,28 @@
     <script src="/js/validate.js"></script>
     <script>
         window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const response = await fetch('/admin/getFaculties');
-                const faculties = await response.json();
+    try {
+        const response = await fetch('/admin/getFaculties');
+        const faculties = await response.json();
 
-                const facultySelect = document.getElementById('faculty');
+        const facultySelect = document.getElementById('faculty');
+        const selectedFacultyId = '{{selectedFacultyId}}'; // Lấy giá trị từ server-side hoặc bất kỳ nơi nào bạn đã lưu trữ giá trị này
 
-                faculties.forEach(faculty => {
-                    const option = document.createElement('option');
-                    option.value = faculty._id;
-                    option.textContent = faculty.name;
-                    facultySelect.appendChild(option);
-                });
-
-            } catch (error) {
-                console.error('Error fetching faculties:', error);
+        faculties.forEach(faculty => {
+            const option = document.createElement('option');
+            option.value = faculty._id;
+            option.textContent = faculty.name;
+            if (faculty._id === selectedFacultyId) {
+                option.selected = true; // Đặt thuộc tính "selected" cho lựa chọn nếu id trùng khớp với selectedFacultyId
             }
+            facultySelect.appendChild(option);
         });
+
+    } catch (error) {
+        console.error('Error fetching faculties:', error);
+    }
+});
+
 
     </script>
 </body>

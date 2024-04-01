@@ -188,7 +188,7 @@ exports.getFaculties = async (req, res) => {
 };
 //QAcoordinator
 exports.viewQAcoordinator = async (req, res) => {
-  let listQAcoordinator = await QAcoordinator.find();
+  let listQAcoordinator = await QAcoordinator.find().populate("faculty");
   res.render("admin/viewQAcoordinator", {
     listQAcoordinator: listQAcoordinator,
     loginName: req.session.email,
@@ -305,9 +305,9 @@ exports.searchQAcoordinator = async (req, res) => {
 
 //Student student
 exports.viewStudent = async (req, res) => {
-  let listStudent = await Student.find();
+  let students = await Student.find().populate("faculty");
   res.render("admin/viewStudent", {
-    listStudent: listStudent,
+    listStudent: students,
     loginName: req.session.email,
   });
 };
