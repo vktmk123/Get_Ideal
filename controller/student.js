@@ -68,7 +68,7 @@ exports.doAddIdea = async (req, res) => {
             content += `
                       <div style="padding: 10px; background-color: #003375">
                       <div style="padding: 10px; background-color: white;">    
-                        `;
+                      `;
             content +=
               '<h4 style="color: #0085ff"> From: ' +
               aStudent.email.toString() +
